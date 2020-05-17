@@ -20,6 +20,7 @@ from apps.expenses import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.dashboard, name = 'dashboard'),
+
     path('apps/expenses/', include('apps.expenses.urls')),
     path('apps/budgets/', include('apps.budgets.urls')),
 

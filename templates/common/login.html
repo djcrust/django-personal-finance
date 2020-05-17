@@ -30,6 +30,8 @@
     <div class="card-body login-card-body">
       <p class="login-box-msg">Sign in to start the application</p>
 
+      {% include 'common/show_message.html' %}
+
       <form action="/login_user/" method="post">
           {% csrf_token %}
         <div class="input-group mb-3">

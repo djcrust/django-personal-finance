@@ -1,10 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-
+from django_personal_finance import settings
 
 # Create your views here.
-from django_personal_finance import settings
 
 
 def dashboard(request):
@@ -12,6 +12,14 @@ def dashboard(request):
         return HttpResponseRedirect('/login_user/')
     else:
         return render(request, 'common/dashboard.html')
+
+
+def expense_list(request):
+    pass
+
+
+def expense_new(request):
+    pass
 
 
 def login_user(request):
@@ -23,23 +31,15 @@ def login_user(request):
             if user.is_active:
                 login(request, user)
                 redirect_to = settings.LOGIN_REDIRECT_URL
-                print('OK')
                 return redirect(redirect_to)
             else:
-                context = {
-                    'error': 'Your My Money account is disabled.',
-                }
-                return render(request, 'common/login.html',context)
+                messages.error(request,'Your My Money account is disabled.')
+                return render(request, 'common/login.html')
         else:
-            context = {
-                'error': 'Invalid Login or Password.',
-            }
-            return render(request, 'common/login.html', context)
+            messages.error(request,'Invalid Login or Password.')
+            return render(request, 'common/login.html')
     else:
-        context = {
-            'error': '',
-        }
-        return render(request, 'common/login.html', context)
+        return render(request, 'common/login.html')
 
 
 def logout_user(request):
