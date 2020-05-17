@@ -1,0 +1,58 @@
+{% extends "budget_settings/base.html" %}
+{% block title %}My Money - Transactions{% endblock %}
+{% block title_page %}Transactions{% endblock %}
+
+{% block button_space %}
+
+    <div class="col-sm-6">
+        <button type="submit" onclick="location.href='{% url 'transaction_new' %}'" class="btn btn-success float-right"><i class="fas fa-plus-circle"></i> Create</button>
+        <button type="submit" class="btn btn-info float-right mr-1"><i class="far fa-file-excel"></i> Export to Excel</button>
+    </div>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card-body table-responsive p-0" style="height: 100%;">
+                <table class="table table-head-fixed text-nowrap">
+                  <thead>
+                    <tr>
+                      <th>DATE</th>
+                      <th>#</th>
+                      <th>ACCOUNT</th>
+                      <th>CATEGORY</th>
+                      <th>DEBIT</th>
+                      <th>CREDIT</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for transaction in transaction_list %}
+                      <tr>
+                      <td>{{ transaction.Date|date:"d/m/Y" }}</td>
+                      <td>{{ transaction.Number }}</td>
+                      <td>{{ transaction.Account }}</td>
+                      <td>{{ transaction.Category }}</td>
+                      <td>{{ transaction.Withdrawal|floatformat:'2' }}</td>
+                      <td>{{ transaction.Deposit }}</td>
+                      <td class="project-actions text-right">
+                          <a class="btn btn-info btn-sm" href="{% url 'transaction_edit' pk=transaction.pk %}"">
+                              <i class="fas fa-pencil-alt">
+                              </i>
+                              Edit
+                          </a>
+                          <a class="btn btn-danger btn-sm" href="{% url 'transaction_delete' pk=transaction.pk %}">
+                              <i class="fas fa-trash">
+                              </i>
+                              Delete
+                          </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+
+    {% include 'budget_settings/pagination.html'  with page=queries %}
+
+{% endblock %}

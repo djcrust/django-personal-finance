@@ -32,6 +32,7 @@ class Expense(models.Model):
     type = models.CharField(max_length=3, choices=CHOICE_TYPE)
     payment = models.CharField(max_length=1, choices=CHOICE_PAYMENT)
     amount = models.DecimalField(max_digits=10, decimal_places=2, blank=False)
+    comment = models.CharField(max_length=255)
     removed = models.BooleanField(default=False)
     image_1 = models.ImageField()
     image_2 = models.ImageField()
