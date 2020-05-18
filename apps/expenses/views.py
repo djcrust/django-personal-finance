@@ -2,6 +2,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+from apps.expenses.models import *
+from apps.expenses.serializers import *
 from django_personal_finance import settings
 
 # Create your views here.
@@ -20,6 +26,50 @@ def expense_list(request):
 
 def expense_new(request):
     pass
+
+
+@api_view(['GET','POST'])
+def expense_api_list(request):
+
+    if request.method == 'GET':
+        expenses = Expense.objects.all()
+        serializers = ExpenseSerializers(expenses,many=True)
+        return Response(serializers.data)
+
+    elif request.method == 'POST':
+        serializers = ExpenseSerializers(data=request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(serializers.data,status=status.HTTP_201_CREATED)
+        return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET','POST'])
+def category_list(request):
+
+    if request.method == 'GET':
+        categories = ExpenseCategory.objects.all()
+        serializers = ExpenseCategorySerializers(categories,many=True)
+        return Response(serializers.data)
+
+    elif request.method == 'POST':
+        serializers = ExpenseCategorySerializers(data=request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(serializers.data,status=status.HTTP_201_CREATED)
+        return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET','PUT','DELETE'])
+def category_details(request,pk):
+    try:
+        category = ExpenseCategory.objects.get(pk=pk)
+    except ExpenseCategory.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializers = ExpenseCategorySerializers(category)
+        return Response(serializers.data)
 
 
 def login_user(request):
